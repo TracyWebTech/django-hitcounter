@@ -4,6 +4,7 @@ from django.db import models
 from django.core.cache import cache
 from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
+from django.utils.text import slugify
 
 
 class Hit(models.Model):
@@ -40,6 +41,8 @@ class HitCounterModelMixin(object):
             ip_addr = request.META.get('REMOTE_ADDR')
             cache_key = u'page_hits-{}-{}-{}'.format(ip_addr,
                                                      content_type, self.pk)
+            cache_key = slugify(cache_key)
+
             duplicate = cache.get(cache_key)
             if duplicate:
                 return
